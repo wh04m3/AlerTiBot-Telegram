@@ -15,7 +15,7 @@ CIUDAD = 'Chicoloapan,mx'
 # === FUNCIONES ===
 
 def obtener_datos_climaticos():
-    url = f'https://api.openweathermap.org/data/2.5/forecast?q={CIUDAD}&appid={WEATHER_API_KEY}&units=metric&lang=es'
+    url = f'https://api.openweathermap.org/data/3.0/onecall?lat=19.372238&lon=-98.913578&lang=esunits=metric&appid=9fa883a0584496cc0625733033f37b62'
     response = requests.get(url)
    # print(response.json())  # 👈 Añade esta línea para ver qué está fallando
     datos = response.json()
