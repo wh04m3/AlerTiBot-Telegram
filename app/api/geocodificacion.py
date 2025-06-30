@@ -1,4 +1,5 @@
 from geopy.geocoders import Nominatim
+from geopy.distance import geodesic
 
 def obtener_direccion(lat, lon):
     try:
@@ -47,3 +48,10 @@ def obtener_direccion_clave(lat, lon):
 
     except Exception as e:
         return {"error": str(e)}
+    
+
+
+def esta_a_menos_de_100_m(coord1, coord2):
+    distancia_m = geodesic(coord1, coord2).meters
+    return distancia_m <= 100
+

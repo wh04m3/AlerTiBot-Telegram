@@ -5,8 +5,19 @@ def registrar_comandos(app):
     # Comando /start
     app.add_handler(CommandHandler("start", handler.start_handler))
     
-    # Comando /alerta
-    app.add_handler(CommandHandler("alerta", handler.alerta_handler))
+    
+    # Comando /alertas
+    alerta_handler = ConversationHandler(
+        entry_points=[CommandHandler("alertas", handler.alerta_handler)],
+        states={
+            handler.UBI:[
+                MessageHandler(filters.LOCATION, handler.ubicacion_alerta)
+                #CommandHandler("skip", skip_location),
+            ],
+        },
+        fallbacks=[CommandHandler("cancelar", handler.cancelar)],
+    )
+    app.add_handler(alerta_handler)
 
     # Respuesta a botones del menu
     app.add_handler(CallbackQueryHandler(handler.callback_handler))
@@ -15,8 +26,12 @@ def registrar_comandos(app):
     reporte_handler = ConversationHandler(
         entry_points=[CommandHandler("reporte", handler.iniciar_reporte)],
         states={
-            handler.UBICACION: [MessageHandler(filters.TEXT & ~filters.COMMAND, handler.recibir_ubicacion)],
-            handler.GRAVEDAD: [MessageHandler(filters.TEXT & ~filters.COMMAND, handler.recibir_gravedad)],
+            handler.UBICACION:[
+                MessageHandler(filters.LOCATION, handler.recibir_ubicacion)
+                #CommandHandler("skip", skip_location),
+            ],
+            handler.GRAVEDAD: [MessageHandler(filters.Regex("^(Muy Bajo|Bajo|Medio|Alto|Muy Alto)$"), handler.recibir_gravedad)],
+            handler.PHOTO: [MessageHandler(filters.PHOTO, handler.recibir_comentario), CommandHandler("saltar", handler.skip_photo)],
             handler.COMENTARIO: [MessageHandler(filters.TEXT & ~filters.COMMAND, handler.recibir_comentario)],
         },
         fallbacks=[CommandHandler("cancelar", handler.cancelar)],
